@@ -18,16 +18,14 @@ io.on('connection', (socket) => {
     console.log('New User Connected');
 
 
-    socket.emit('newMessage', {
+    socket.on('createMessage', (msg) => {
+        console.log('createMessage:', msg);
+        io.emit('newMessage', {
+            from: msg.from,
+            text: msg.text,
+            createdAt: new Date().getTime()
+        });
 
-        from: 'Sophia',
-        text: 'Badabibadaboo?',
-        createAt: '33'
-       
-    });
-
-    socket.on('createMessage', (newMessage) => {
-        console.log('create email:', newMessage)
     });
 
 
