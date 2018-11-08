@@ -21,19 +21,10 @@ io.on('connection', (socket) => {
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat-app' ));
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined'));
 
-    socket.on('createMessage', (msg) => {
-        console.log('createMessage:', msg);
-
-
-        // io.emit('newMessage', {
-        //     from: msg.from,
-        //     text: msg.text,
-        //     createdAt: new Date().getTime()
-        // });
-
-        // only I will NOT get the messag //
-        socket.broadcast.emit('newMessage', generateMessage(msg.from, msg.text));
-
+    socket.on('createMessage', (msg, callback) => {
+        io.emit('newMessage', generateMessage(msg.from, msg.text));
+        // socket.broadcast.emit('newMessage', generateMessage(msg.from, msg.text));
+        callback('This is from the server');
     });
 
 
