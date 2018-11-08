@@ -10,20 +10,9 @@
     <p>Welcome</p>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/index.js"></script>
 
-    <script>
-        var socket = io();
-
-        socket.on('connect', () => {
-            console.log('Connected to server');
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Disconnectedfrom server');
-        });
-
-
-    </script>
+   
 </body>
 
 </html>
