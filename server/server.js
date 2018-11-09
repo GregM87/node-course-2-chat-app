@@ -21,10 +21,12 @@ io.on('connection', (socket) => {
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat-app'));
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined'));
 
+    // Get message object and send it off to io.emit (everyone)
     socket.on('createMessage', (msg, callback) => {
         io.emit('newMessage', generateMessage(msg.from, msg.text));
         // socket.broadcast.emit('newMessage', generateMessage(msg.from, msg.text));
-        // callback('This is from the server');
+        //callback to client that function execution finished
+        callback();
     });
 
     socket.on('createLocationMessage', (coords) => {
