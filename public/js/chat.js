@@ -1,6 +1,24 @@
 
 var socket = io();
 
+
+function scrollToBottom() {
+// Selector
+var messages = jQuery('#messages');
+var newMessage = messages.children('li:last-child');
+
+// Heights
+var clientHeight = messages.prop('clientHeight');
+var scrollTop = messages.prop ('scrollTop');
+var scrollHeight = messages.prop ('scrollHeight');
+var newMessageHeight = newMessage.innerHeight();
+var lastMessageHeight = newMessage.prev().innerHeight();
+
+if(clientHeight+scrollTop+newMessageHeight+lastMessageHeight >= scrollHeight) {
+    messages.scrollTop(scrollHeight);
+};
+};
+
 socket.on('connect', function () {
     console.log('Connected to server');
 
@@ -13,27 +31,42 @@ socket.on('disconnect', function () {
 
 
 socket.on('newMessage', function (msg) {
-    console.log('Got new Message:', msg);
     var formattedTime = moment(msg.createdAt).format('h:mm, a');
-    var container = jQuery('<div style="width:100%"></div>');
-    var div = jQuery('<div class="msg"></div>');
-    container.append(div);
-    div.append(`<span style="float: left; font-size: .8rem; color:deeppink; font-weight: 700">${msg.from}</span><br>`);
-    div.append(`${msg.text}<br>`);
-    div.append(`<span style="font-size: .6rem">${formattedTime} </span>`);
-    jQuery('#messages').append(container);
+    // var container = jQuery('<div style="width:100%"></div>');
+    // var div = jQuery('<div class="msg"></div>');
+    // container.append(div);
+    // div.append(`<span style="float: left; font-size: .8rem; color:deeppink; font-weight: 700">${msg.from}</span><br>`);
+    // div.append(`${msg.text}<br>`);
+    // div.append(`<span style="font-size: .6rem">${formattedTime} </span>`);
+    // jQuery('#messages').append(container);
+
+ 
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+
+        text: msg.text,
+        from: msg.from,
+        createdAt: formattedTime
+    });
+
+    jQuery('#messages').append(html);
+    scrollToBottom();
+
 });
 
 socket.on('newLocationMessage', function (msg) {
-    var li = jQuery('<li></li>');
+  
     var formattedTime = moment(msg.createdAt).format('h:mm, a');
-    var a = jQuery('<a target="_blank">My current location</a>');
+    var template = jQuery('#location-message-template').html();
+    var html = Mustache.render(template, {
+        
+        from: msg.from,
+        url: msg.url,
+        createdAt: formattedTime
+    });
 
-    li.append(`<b><br>${msg.from}</b> ${formattedTime}</br>`);
-    a.attr('href', msg.url);
-    li.append(a);
-    jQuery('#messages').append(li);
-
+    jQuery('#messages').append(html);
+    scrollToBottom();
 });
 
 
